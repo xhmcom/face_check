@@ -9,13 +9,14 @@ import datetime
 import logging
 import time
 
+
 mutex = threading.Lock()
 frame_list = []
 face_session = dict()
 face_session['timestamp'] = 0
 face_session['username'] = 'unknown'
 c0_rtmp = "rtmp://rtmp.open.ys7.com/openlive/f6a7eb05c5b645acb7821020bcf9b057.hd"
-
+c0_ezopen = "ezopen://open.ys7.com/C69004173/1.hd.live"
 
 def frame_read(camera_ad=c0_rtmp):
     """
@@ -30,6 +31,7 @@ def frame_read(camera_ad=c0_rtmp):
     cap = cv2.VideoCapture(camera_ad)
     try:
         while True:
+            time.sleep(0.001)
             ret, frame = cap.read()
             print(ret)
             if ret:
@@ -39,6 +41,10 @@ def frame_read(camera_ad=c0_rtmp):
                     mutex.release()
 
                 #cv2.imshow('Video', frame)
+            else:
+                time.sleep(1)
+                cap.release()
+                cap = cv2.VideoCapture(camera_ad)
     finally:
         cap.release()
         #cv2.destroyAllWindows()
@@ -53,6 +59,7 @@ def frame_check():
     db = db_helper.DBHelper()
     db_flag = db.connect_database()
     while True:
+        time.sleep(0.001)
         n_frame = None
         if mutex.acquire():
             global frame_list

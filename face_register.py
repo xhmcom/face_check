@@ -14,7 +14,7 @@ import time
 mutex = threading.Lock()
 frame_list = []
 c0_rtmp = "rtmp://rtmp.open.ys7.com/openlive/f6a7eb05c5b645acb7821020bcf9b057.hd"
-
+angle_name = ['mid', 'up', 'down', 'left', 'right']
 
 def frame_read(camera_ad=c0_rtmp):
     """
@@ -76,15 +76,12 @@ def frame_register():
                         face_list = face.get_faces()
                         face_result = face_list[0]
                         f_quality, f_angle = quality_check(face_result)
-
-                        print("quality: " + str(f_quality) + ", angle: " + str(f_angle))
+                        
                         if f_quality:
+                            print("angle: " + str(angle_name[f_angle])
                             if angle[f_angle] < 1:
                                 if face.face_register(group_id='lab', user_id=username):
                                     angle[f_angle] += 1
-                                    if angle[f_angle] > 0:
-                                        # 这个角度完成
-                                        pass
                 except:
                     traceback.print_exc()
                 time.sleep(0.5)
