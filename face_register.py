@@ -15,12 +15,13 @@ mutex = threading.Lock()
 frame_list = []
 c0_rtmp = "rtmp://rtmp.open.ys7.com/openlive/f6a7eb05c5b645acb7821020bcf9b057.hd"
 angle_name = ['mid', 'up', 'down', 'left', 'right']
+angle = [0, 0, 0, 0, 0]
 
-def frame_read(camera_ad=c0_rtmp):
+def frame_read(camera_ad=0):
     """
     摄像头启动，记录帧
     Args:
-        camera_ad: 摄像头地址
+        camera_ad: 摄像头地址(由于人脸采集需要采集人查看反馈信息，人脸采集在本机上完成)
 
     Returns:
 
@@ -28,6 +29,7 @@ def frame_read(camera_ad=c0_rtmp):
     cap = cv2.VideoCapture(camera_ad)
     try:
         while True:
+            time.sleep(0.001)
             ret, frame = cap.read()
             if ret:
                 if mutex.acquire():
@@ -55,10 +57,13 @@ def frame_register():
     db_flag = db.connect_database()
 
     while True:
+        time.sleep(0.001)
         username = raw_input('username: ')
         realname = raw_input('姓名:')
         # angle 表示人脸的角度 0到4依次表示 mid, up, down, left, right
+        global angle
         angle = [0, 0, 0, 0, 0]
+        print(realname + "人脸采集开始，请面对摄像头，然后头部上下左右微转保持几秒")
         while not (angle[0] > 0 and angle[1] > 0 and angle[2] > 0 and angle[3] > 0 and angle[4] > 0):
 
             n_frame = None
@@ -76,12 +81,16 @@ def frame_register():
                         face_list = face.get_faces()
                         face_result = face_list[0]
                         f_quality, f_angle = quality_check(face_result)
-                        
+
                         if f_quality:
-                            print("angle: " + str(angle_name[f_angle])
+
+                            print("正在采集...")
                             if angle[f_angle] < 1:
+                                print(str(angle_name[f_angle]) + "角度完成采集...")
                                 if face.face_register(group_id='lab', user_id=username):
                                     angle[f_angle] += 1
+                        else:
+                            print("正在采集...")
                 except:
                     traceback.print_exc()
                 time.sleep(0.5)
@@ -108,15 +117,15 @@ def quality_check(face_result):
        face_result['quality']['occlusion']['right_cheek'] < 0.8 and \
        face_result['quality']['occlusion']['chin_contour'] < 0.6 and \
        abs(face_result['angle']['roll']) <= 20:
-        if abs(face_result['angle']['pitch']) <= 12 and abs(face_result['angle']['yaw']) <= 12:
+        if abs(face_result['angle']['pitch']) <= 12 and abs(face_result['angle']['yaw']) <= 15 and angle[0] == 0:
             return True, 0
-        if -40 < face_result['angle']['pitch'] < -12 and abs(face_result['angle']['yaw']) <= 12:
+        elif -40 < face_result['angle']['pitch'] < -12 and angle[1] == 0:
             return True, 1
-        if 12 < face_result['angle']['pitch'] < 40 and abs(face_result['angle']['yaw']) <= 12:
+        elif 12 < face_result['angle']['pitch'] < 40 and angle[2] == 0:
             return True, 2
-        if abs(face_result['angle']['pitch']) <= 12 and -40 < face_result['angle']['yaw'] < -12:
+        elif -40 < face_result['angle']['yaw'] < -15 and angle[3] == 0:
             return True, 3
-        if abs(face_result['angle']['pitch']) <= 12 and 12 < face_result['angle']['yaw'] < 40:
+        elif 15 < face_result['angle']['yaw'] < 40 and angle[4] == 0:
             return True, 4
     return False, -1
 
