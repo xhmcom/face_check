@@ -32,3 +32,90 @@
 2018-11-09 16:25:18,526ERROR   :params: (u'xuhuanmin', '2018-11-09', '16:25:20')
 2018-11-09 16:26:35,750ERROR   :execute failed: insert into check_t (userName, checkInDate, checkInTime) values (%s, %s, %s)
 2018-11-09 16:26:35,750ERROR   :params: (u'xuhuanmin', '2018-11-09', '16:26:37')
+2018-12-07 11:39:16,066ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 11:39:16,066ERROR   :params: ('2018-12-07', u'liudayiheng')
+2018-12-07 11:39:16,067ERROR   :execute failed: insert into check_t (userName, checkInDate, checkInTime) values (%s, %s, %s)
+2018-12-07 11:39:16,067ERROR   :params: (u'liudayiheng', '2018-12-07', '2018-12-07 11:39:15')
+2018-12-07 13:16:19,624ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 13:16:19,624ERROR   :params: ('2018-12-07', u'puyifan')
+2018-12-07 13:16:19,624ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 13:16:19,624ERROR   :params: ('2018-12-07', u'puyifan')
+2018-12-07 13:16:20,444ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 13:16:20,445ERROR   :params: ('2018-12-07', u'puyifan')
+2018-12-07 13:16:20,445ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 13:16:20,445ERROR   :params: ('2018-12-07', u'puyifan')
+2018-12-07 14:15:55,624ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:15:55,624ERROR   :params: ('2018-12-07', u'fufeifei')
+2018-12-07 14:15:55,625ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:15:55,625ERROR   :params: ('2018-12-07', u'fufeifei')
+2018-12-07 14:15:56,454ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:15:56,454ERROR   :params: ('2018-12-07', u'fufeifei')
+2018-12-07 14:15:56,454ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:15:56,455ERROR   :params: ('2018-12-07', u'fufeifei')
+2018-12-07 14:15:57,329ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:15:57,329ERROR   :params: ('2018-12-07', u'fufeifei')
+2018-12-07 14:15:57,329ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:15:57,329ERROR   :params: ('2018-12-07', u'fufeifei')
+2018-12-07 14:16:23,919ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:16:23,919ERROR   :params: ('2018-12-07', u'laizhichen')
+2018-12-07 14:16:23,919ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:16:23,920ERROR   :params: ('2018-12-07', u'laizhichen')
+2018-12-07 14:16:25,274ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:16:25,274ERROR   :params: ('2018-12-07', u'laizhichen')
+2018-12-07 14:16:25,275ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:16:25,275ERROR   :params: ('2018-12-07', u'laizhichen')
+2018-12-07 14:16:26,243ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:16:26,243ERROR   :params: ('2018-12-07', u'laizhichen')
+2018-12-07 14:16:26,244ERROR   :execute failed: select *
+                         from check_t
+                         where checkInDate = %s
+                         and userName = %s
+2018-12-07 14:16:26,244ERROR   :params: ('2018-12-07', u'laizhichen')

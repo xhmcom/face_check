@@ -26,7 +26,7 @@ logger.setLevel(logging.INFO)
 
 class DBHelper:
     # 构造函数
-    def __init__(self, host='192.168.0.137', user='lvlab',
+    def __init__(self, host='192.168.0.141', user='lvlab',
                  pwd='lvlab', db='face_check'):
         self.__host = host
         self.__user = user

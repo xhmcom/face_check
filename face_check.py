@@ -95,7 +95,7 @@ class FaceHandler(object):
 
         """
         options = dict()
-        options["quality_control"] = "LOW"
+        options["quality_control"] = "NONE"
         options["liveness_control"] = "NONE"
         options["max_user_num"] = 1
         user_dict = self.__client.search(self.image, self.image_type, self.group_id, options)
@@ -104,7 +104,7 @@ class FaceHandler(object):
         if self.__error_warning(user_dict):
             max_pro_user = user_dict['result']['user_list'][0]
             print(max_pro_user['score'])
-            if max_pro_user['score'] >= 80:
+            if max_pro_user['score'] >= 75:
                 return user_time, max_pro_user['user_id']
 
         return user_time, 'unknown'
