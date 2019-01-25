@@ -80,7 +80,7 @@ class FaceHandler(object):
         options["max_face_num"] = 3
         options["face_field"] = 'quality'
         self.face_dict = self.__client.detect(self.image, self.image_type, options)
-        # print(face_dict) # test
+        #print(self.face_dict) # test
         if self.__error_warning(self.face_dict) and self.face_dict['result']['face_num'] > 0:
             self.image = self.face_dict['result']['face_list'][0]['face_token']
             self.image_type = 'FACE_TOKEN'
@@ -104,7 +104,7 @@ class FaceHandler(object):
         if self.__error_warning(user_dict):
             max_pro_user = user_dict['result']['user_list'][0]
             print(max_pro_user['score'])
-            if max_pro_user['score'] >= 75:
+            if max_pro_user['score'] >= 85:
                 return user_time, max_pro_user['user_id']
 
         return user_time, 'unknown'

@@ -1,5 +1,9 @@
 # coding=utf-8
 # __author__ = 'xhm'
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 import cv2
 import face_check
 import threading
@@ -8,17 +12,18 @@ import db_helper
 import datetime
 import logging
 import time
-
+from PIL import Image, ImageDraw, ImageFont
+import numpy
 
 mutex = threading.Lock()
 frame_list = []
+realname = ''
 face_session = dict()
 face_session['timestamp'] = 0
 face_session['username'] = 'unknown'
 c0_rtmp = "rtmp://rtmp.open.ys7.com/openlive/f6a7eb05c5b645acb7821020bcf9b057.hd"
-c0_ezopen = "ezopen://open.ys7.com/C69004173/1.hd.live"
 
-def frame_read(camera_ad=c0_rtmp):
+def frame_read(camera_ad=0):
     """
     摄像头启动，记录帧
     Args:
@@ -29,6 +34,7 @@ def frame_read(camera_ad=c0_rtmp):
     """
 
     cap = cv2.VideoCapture(camera_ad)
+    global realname
     try:
         while True:
             time.sleep(0.001)
@@ -38,15 +44,33 @@ def frame_read(camera_ad=c0_rtmp):
                     global frame_list
                     frame_list.append(frame)
                     mutex.release()
-                #yield cv2.imencode('.jpg', frame)[1].tobytes()
-                #cv2.imshow('Video', frame)
+                
+                if realname != '':
+                    img_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                    zh_font = ImageFont.truetype('DroidSansFallbackFull.ttf', 40)
+                    en_font = ImageFont.truetype('DejaVuSans-BoldOblique.ttf', 40)
+                    fillcolor = (255, 0, 0)
+                    pos = (30, 30)
+                    if not isinstance(realname, unicode):
+                        realname = realname.decode('utf-8')
+                    draw = ImageDraw.Draw(img_pil)
+                    if realname == 'unknown':
+                        font = en_font
+                    else:
+                        font = zh_font
+                    draw.text(pos, realname, font=font, fill=fillcolor)
+                    frame = cv2.cvtColor(numpy.asarray(img_pil), cv2.COLOR_RGB2BGR)
+                cv2.imshow('Video', frame)
             else:
                 time.sleep(1)
                 cap.release()
                 cap = cv2.VideoCapture(camera_ad)
+            c = cv2.waitKey(1)
+            if c == 27:
+                break
     finally:
         cap.release()
-        #cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
 
 def frame_check():
@@ -57,6 +81,7 @@ def frame_check():
     """
     db = db_helper.DBHelper()
     db_flag = db.connect_database()
+    global realname
     while True:
         time.sleep(0.001)
         n_frame = None
@@ -78,7 +103,11 @@ def frame_check():
                     face_time, username = face.face_search()
                     print(face_time)
                     print(username)
-                    if username != 'unknown' and db_flag:
+                    if not db_flag:
+                        db = db_helper.DBHelper()
+                        db_flag = db.connect_database()
+                    if username != 'unknown':
+                        realname = get_realname(db, username)
                         if username == face_session['username'] and \
                                                 (face_time - face_session['timestamp']) < 10:
                             # 10秒内重复出现记录为同一个人
@@ -90,7 +119,11 @@ def frame_check():
                             print ("time: " + str(t_e-t_s))
                         face_session['username'] = username
                         face_session['timestamp'] = face_time
-                time.sleep(0.2)
+                    else:
+                        realname = 'unknown'
+                else:
+                    realname = ''
+                time.sleep(0.1)
             except:
                 traceback.print_exc()
 
@@ -125,6 +158,22 @@ def insert_check(db, timestamp, username):
         db.execute("""update check_t set checkInTime = %s
                       where userName = %s and checkInTime = %s
                     """, (face_time, username, update_str))
+
+
+def get_realname(db, username):
+    """
+    get real name from database
+    Args:
+        db:
+        username:
+    Returns:
+        realname:
+    """
+
+    realname = db.fetchall("""select realName
+                              from user_t
+                              where userName = %s""", username)
+    return realname[0][0]
 
 
 def main():
