@@ -15,6 +15,9 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 import numpy
 
+import faulthandler
+faulthandler.enable()
+
 mutex = threading.Lock()
 frame_list = []
 realname = ''
@@ -42,6 +45,8 @@ def frame_read(camera_ad=0):
             if ret:
                 if mutex.acquire():
                     global frame_list
+                    if len(frame_list) > 10:
+                        frame_list = []
                     frame_list.append(frame)
                     mutex.release()
                 
@@ -60,7 +65,10 @@ def frame_read(camera_ad=0):
                         font = zh_font
                     draw.text(pos, realname, font=font, fill=fillcolor)
                     frame = cv2.cvtColor(numpy.asarray(img_pil), cv2.COLOR_RGB2BGR)
+                # frame = cv2.resize(frame, (1280, 960), interpolation=cv2.INTER_CUBIC)
+                #cv2.namedWindow('Video', 0)
                 cv2.imshow('Video', frame)
+                cv2.moveWindow('Video', 0, 0)
             else:
                 time.sleep(1)
                 cap.release()
@@ -82,6 +90,7 @@ def frame_check():
     db = db_helper.DBHelper()
     db_flag = db.connect_database()
     global realname
+    keep_sql = 10000
     while True:
         time.sleep(0.001)
         n_frame = None
@@ -93,11 +102,22 @@ def frame_check():
             mutex.release()
 
         if n_frame is not None:
+            keep_sql -= 1
+            if keep_sql == 0:
+                get_realname(db, 'xuhuanmin')
+                keep_sql = 5000
+                print('keep alive...')
             face = face_check.FaceHandler()
             try:
                 face.set_image(image=face_check.get_base64(n_frame), image_type='BASE64')
-                if face.face_detect():
+                try:
+                    face_dt = face.face_detect()
+                except:
+                    face_dt = False
+                
+                if face_dt:
                     # show faces
+                    print(time.time(), ' detected')
                     face_list = face.get_faces()
 
                     face_time, username = face.face_search()
@@ -123,6 +143,7 @@ def frame_check():
                         realname = 'unknown'
                 else:
                     realname = ''
+                    print(time.time(), ' undetected')
                 time.sleep(0.1)
             except:
                 traceback.print_exc()
@@ -182,6 +203,7 @@ def main():
     Returns:
 
     """
+    print('start')
     t_read = threading.Thread(target=frame_read)
     t_read.start()
 

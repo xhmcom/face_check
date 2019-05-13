@@ -19,7 +19,8 @@ class FaceHandler(object):
             group_id:
         """
         self.__client = AipFace(self.__app_id, self.__api_key, self.__secret_key)
-
+        self.__client.setConnectionTimeoutInMillis(2000)
+        self.__client.setSocketTimeoutInMillis(2000)
         # init
         self.image = ''
         self.image_type = ''
@@ -77,7 +78,7 @@ class FaceHandler(object):
             是否有人脸
         """
         options = dict()
-        options["max_face_num"] = 3
+        options["max_face_num"] = 1
         options["face_field"] = 'quality'
         self.face_dict = self.__client.detect(self.image, self.image_type, options)
         #print(self.face_dict) # test
@@ -99,8 +100,12 @@ class FaceHandler(object):
         options["liveness_control"] = "NONE"
         options["max_user_num"] = 1
         user_dict = self.__client.search(self.image, self.image_type, self.group_id, options)
-        # print(user_dict) # test
-        user_time = user_dict['timestamp']
+        print(user_dict) # test
+        try:
+            user_time = user_dict['timestamp']
+        except:
+            print('notimestamp')
+            return 0, 'unknown'
         if self.__error_warning(user_dict):
             max_pro_user = user_dict['result']['user_list'][0]
             print(max_pro_user['score'])

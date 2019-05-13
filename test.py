@@ -13,7 +13,7 @@ import threading
 
 ezopen = "ezopen://open.ys7.com/C69004173/1.hd.live"
 rtmp = "rtmp://rtmp.open.ys7.com/openlive/f6a7eb05c5b645acb7821020bcf9b057.hd"
-cap = cv2.VideoCapture(rtmp)
+cap = cv2.VideoCapture(0)
 
 
 try:

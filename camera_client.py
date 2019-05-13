@@ -34,7 +34,7 @@ def frame_read(camera_ad=0):
     global realname
     try:
         while True:
-            time.sleep(0.001)
+            time.sleep(0.01)
             ret, frame = cap.read()
             if ret:
                 if mutex.acquire():
@@ -81,21 +81,26 @@ def frame_check():
     sock.connect(('192.168.0.141', 8080))
     encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
     while True:
-        time.sleep(0.001)
+        time.sleep(0.01)
         frame = None
+        flagframe = False
         if mutex.acquire():
             global frame_list
             if frame_list:
                 frame = frame_list[-1]
+                flagframe = True
             frame_list = []
             mutex.release()
-        result, imgencode = cv2.imencode('.jpg', frame, encode_param)
-        data = numpy.array(imgencode)
-        string_data = data.tostring()
-        sock.send(str(len(string_data)).ljust(16))
-        sock.send(string_data)
-        realname = sock.recv(64)
-        
+        if flagframe:
+            print("sending frame...")
+            result, imgencode = cv2.imencode('.jpg', frame, encode_param)
+            data = numpy.array(imgencode)
+            string_data = data.tostring()
+            sock.send(str(len(string_data)).ljust(16))
+            sock.send(string_data)
+            print("send finish...")
+            realname = sock.recv(64)
+            print("receive realname: " + str(realname))
     sock.close()
 
 

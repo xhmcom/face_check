@@ -34,6 +34,8 @@ def frame_read(camera_ad=0):
             if ret:
                 if mutex.acquire():
                     global frame_list
+                    if len(frame_list) > 50:
+                        frame_list = []
                     frame_list.append(frame)
                     mutex.release()
                 # cv2.circle(frame, (frame.shape[1] // 2, frame.shape[0] // 2), 180, (255, 255, 255), 2)

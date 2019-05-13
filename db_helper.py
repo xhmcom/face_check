@@ -59,6 +59,8 @@ class DBHelper:
         # 连接数据库
         if not self.__conn:
             self.connect_database()
+        if not self.__cur:
+            self.__cur = self.__conn.cursor()
         try:
             if self.__conn and self.__cur:
                 # 正常逻辑，执行sql，提交操作
