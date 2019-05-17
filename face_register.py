@@ -67,7 +67,8 @@ def frame_register():
         angle = [0, 0, 0, 0, 0]
         print(realname + "人脸采集开始，请面对摄像头，然后头部上下左右微转保持几秒")
         while not (angle[0] > 0 and angle[1] > 0 and angle[2] > 0 and angle[3] > 0 and angle[4] > 0):
-
+            if (angle[0] + angle[1] + angle[2] + angle[3] + angle[4]) >= 3:
+                break
             n_frame = None
             if mutex.acquire():
                 global frame_list
@@ -119,15 +120,15 @@ def quality_check(face_result):
        face_result['quality']['occlusion']['right_cheek'] < 0.8 and \
        face_result['quality']['occlusion']['chin_contour'] < 0.6 and \
        abs(face_result['angle']['roll']) <= 20:
-        if abs(face_result['angle']['pitch']) <= 12 and abs(face_result['angle']['yaw']) <= 15 and angle[0] == 0:
+        if abs(face_result['angle']['pitch']) <= 8 and abs(face_result['angle']['yaw']) <= 8 and angle[0] == 0:
             return True, 0
-        elif -40 < face_result['angle']['pitch'] < -12 and angle[1] == 0:
+        elif -40 < face_result['angle']['pitch'] < -8 and angle[1] == 0:
             return True, 1
-        elif 12 < face_result['angle']['pitch'] < 40 and angle[2] == 0:
+        elif 8 < face_result['angle']['pitch'] < 40 and angle[2] == 0:
             return True, 2
-        elif -40 < face_result['angle']['yaw'] < -15 and angle[3] == 0:
+        elif -40 < face_result['angle']['yaw'] < -8 and angle[3] == 0:
             return True, 3
-        elif 15 < face_result['angle']['yaw'] < 40 and angle[4] == 0:
+        elif 8 < face_result['angle']['yaw'] < 40 and angle[4] == 0:
             return True, 4
     return False, -1
 
