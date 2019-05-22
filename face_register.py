@@ -13,7 +13,6 @@ import time
 
 mutex = threading.Lock()
 frame_list = []
-c0_rtmp = "rtmp://rtmp.open.ys7.com/openlive/f6a7eb05c5b645acb7821020bcf9b057.hd"
 angle_name = ['mid', 'up', 'down', 'left', 'right']
 angle = [0, 0, 0, 0, 0]
 
@@ -50,7 +49,7 @@ def frame_read(camera_ad=0):
 
 def frame_register():
     """
-
+    人脸注册逻辑
     Returns:
 
     """
@@ -60,14 +59,14 @@ def frame_register():
 
     while True:
         time.sleep(0.001)
-        username = raw_input('username: ')
-        realname = raw_input('姓名:')
+        username = raw_input('username: ')  # 写入数据库的username以及人脸库中标识，重要！
+        realname = raw_input('姓名:')  # 写入数据库的中文姓名realname
         # angle 表示人脸的角度 0到4依次表示 mid, up, down, left, right
         global angle
         angle = [0, 0, 0, 0, 0]
         print(realname + "人脸采集开始，请面对摄像头，然后头部上下左右微转保持几秒")
         while not (angle[0] > 0 and angle[1] > 0 and angle[2] > 0 and angle[3] > 0 and angle[4] > 0):
-            if (angle[0] + angle[1] + angle[2] + angle[3] + angle[4]) >= 3:
+            if (angle[0] + angle[1] + angle[2] + angle[3] + angle[4]) >= 3:  # 采集到3个角度就OK
                 break
             n_frame = None
             if mutex.acquire():
@@ -105,7 +104,7 @@ def frame_register():
 
 def quality_check(face_result):
     """
-    注册人脸质量控制
+    注册人脸质量控制（调整了人脸姿态，只需要小姿态就可以识别到）
     Returns:
 
     """

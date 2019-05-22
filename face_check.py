@@ -8,6 +8,8 @@ import logging
 
 
 class FaceHandler(object):
+
+    # 三个baidu人脸项目的参数
     __app_id = '14620211'
     __api_key = 'De4qbgYbcvusHHquWBfsrt5k'
     __secret_key = 'nGZ1nnH2GQL1gY54XlXlc52HekdH7xm3'
@@ -19,9 +21,10 @@ class FaceHandler(object):
             group_id:
         """
         self.__client = AipFace(self.__app_id, self.__api_key, self.__secret_key)
+        # 处理连接不稳定的情况，2秒重连
         self.__client.setConnectionTimeoutInMillis(2000)
         self.__client.setSocketTimeoutInMillis(2000)
-        # init
+        # 初始化
         self.image = ''
         self.image_type = ''
         self.group_id = group_id
@@ -93,7 +96,8 @@ class FaceHandler(object):
         """
         人脸搜索（包含质量检测）
         Returns:
-
+            user_time: 检测时间
+            user_name: 检测结果，输出username，若无匹配人脸测输出unknown
         """
         options = dict()
         options["quality_control"] = "NONE"
