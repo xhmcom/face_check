@@ -10,9 +10,9 @@ import logging
 class FaceHandler(object):
 
     # 三个baidu人脸项目的参数
-    __app_id = '14620211'
-    __api_key = 'De4qbgYbcvusHHquWBfsrt5k'
-    __secret_key = 'nGZ1nnH2GQL1gY54XlXlc52HekdH7xm3'
+    __app_id = '16317183'
+    __api_key = 'yppK0wySGwdgL5dHbUGfRNQj'
+    __secret_key = 'SIEVAix4UYHWHlRiz29kl0wuWbGQs2Es'
 
     def __init__(self, group_id='lab'):
         """
